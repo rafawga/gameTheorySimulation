@@ -1,0 +1,119 @@
+using System;
+using System.Collections.Generic;
+
+class Individuo
+{
+    public int Moedas { get; set; } = 10;
+
+    public virtual string Decidir(Individuo adversario)
+    {
+        return "";
+    }
+}
+
+class Colaborativo : Individuo
+{
+    public override string Decidir(Individuo adversario)
+    {
+        return "cooperar";
+    }
+}
+
+class Trapaceiro : Individuo
+{
+    public override string Decidir(Individuo adversario)
+    {
+        return "trapacear";
+    }
+}
+
+class Rabugento : Individuo
+{
+    private bool trapaceou = false;
+
+    public override string Decidir(Individuo adversario)
+    {
+        if (trapaceou)
+        {
+            return "trapacear";
+        }
+        else
+        {
+            return "cooperar";
+        }
+    }
+}
+
+class Copiador : Individuo
+{
+    private string decisaoAnterior = "";
+
+    public override string Decidir(Individuo adversario)
+    {
+        if (decisaoAnterior == "")
+        {
+            decisaoAnterior = (new Random().Next(2) == 0) ? "cooperar" : "trapacear";
+        }
+        return decisaoAnterior;
+    }
+}
+
+class Tolerante : Individuo
+{
+    private int contadorEnganos = 0;
+
+    public override string Decidir(Individuo adversario)
+    {
+        if (contadorEnganos >= 3)
+        {
+            contadorEnganos--;
+            return "trapacear";
+        }
+        else
+        {
+            return "cooperar";
+        }
+    }
+
+    public void SofreuEngano()
+    {
+        contadorEnganos++;
+    }
+}
+
+class Mundo
+{
+    private List<Individuo> populacao;
+
+    public Mundo(List<Individuo> populacao)
+    {
+        this.populacao = populacao;
+    }
+
+    public void IniciarJogo(int rodadas)
+    {
+        for (int r = 0; r < rodadas; r++)
+        {
+            List<Individuo> individuosInteragir = new List<Individuo>(populacao);
+            while (individuosInteragir.Count > 1)
+            {
+                Individuo individuo1 = SelecionarIndividuoAleatorio(individuosInteragir);
+                individuosInteragir.Remove(individuo1);
+                Individuo individuo2 = SelecionarIndividuoAleatorio(individuosInteragir);
+                individuosInteragir.Remove(individuo2);
+
+                string decisao1 = individuo1.Decidir(individuo2);
+                string decisao2 = individuo2.Decidir(individuo1);
+
+                if (decisao1 == "cooperar" && decisao2 == "cooperar")
+                {
+                    individuo1.Moedas += 2;
+                    individuo2.Moedas += 2;
+                }
+                else if (decisao1 == "trapacear" && decisao2 == "cooperar")
+                {
+                    individuo1.Moedas += 4;
+                }
+                else if (decisao1 == "cooperar" && decisao2 == "trapacear")
+                {
+                    individuo2.Moedas += 4;
