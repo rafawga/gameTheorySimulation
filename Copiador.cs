@@ -4,13 +4,9 @@ public class Copiador : Individuo
     {
         return new Copiador();
     }
-    public override string Escolha()
+    public override bool Escolha()
     {
-        if (decisaoAnterior == "")
-        {
-            decisaoAnterior = "cooperar";
-        }
-
+        
         return decisaoAnterior;
     }
 }

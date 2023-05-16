@@ -6,8 +6,9 @@ class Colaborativo : Individuo
         return new Colaborativo();
     }
 
-    public override string Escolha()
+
+    public override bool Escolha()
     {
-        return "cooperar";
+        return false;
     }
 }

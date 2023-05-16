@@ -1,19 +1,26 @@
 public class Tolerante : Individuo
 {
     public int vinganca = 0;
-     public override Individuo Duplicar()
+    public override Individuo Duplicar()
     {
         return new Tolerante();
     }
-    public override string Escolha()
+    public override bool Escolha()
     {
+        if (vinganca == 3)
+        {
+            vinganca = 0;
+            trapaceado = 0;
+        }
         if (trapaceado >= 3)
         {
-            return "trapacear";
+            vinganca += 1;
+            return true;
+            
         }
         else
         {
-            return "cooperar";
+            return false;
         }
     }
 }

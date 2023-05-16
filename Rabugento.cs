@@ -5,15 +5,15 @@ class Rabugento : Individuo
     {
         return new Rabugento();
     }
-    public override string Escolha()
+    public override bool Escolha()
     {
         if (trapaceado > 0)
         {
-            return "trapacear";
+            return true;
         }
         else
         {
-            return "cooperar";
+            return false;
         }
     }
 }

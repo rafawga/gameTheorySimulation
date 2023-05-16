@@ -4,8 +4,8 @@ class Trapaceiro : Individuo
     {
         return new Trapaceiro();
     }
-    public override string Escolha()
+    public override bool Escolha()
     {
-        return "trapacear";
+        return true;
     }
 }
