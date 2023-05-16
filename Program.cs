@@ -23,11 +23,12 @@ List<Individuo> StartSimulation()
         listaIndividuos.Add(new Copiador());
     for (int i = 0; i < Tolerante; i++)
         listaIndividuos.Add(new Tolerante());
-        
+
     return listaIndividuos;
 }
 
-void Misturar(ref List<Individuo> list){
+void Misturar(ref List<Individuo> list)
+{
     RNGCryptoServiceProvider provider = new RNGCryptoServiceProvider();
     int n = list.Count;
     while (n > 1)
@@ -45,51 +46,112 @@ void Misturar(ref List<Individuo> list){
 
 void play(ref List<Individuo> listaIndividuos)
 {
-    for (int i = 0; i < listaIndividuos.Count; i += 2)
+    if (listaIndividuos.Count > 1)
     {
-
-        if (listaIndividuos[i].Escolha() == "trapacear" && listaIndividuos[i + 1].Escolha() == "trapacear")
+        for (int i = 0; i < listaIndividuos.Count; i += 2)
         {
-            listaIndividuos[i].moeda -= 1;
-            listaIndividuos[i + 1].moeda -= 1;
+            int j = i + 1;
+            bool removedI = false;
+            bool removedJ = false;
+
+            if (listaIndividuos.Count % 2 == 1 && i == listaIndividuos.Count - 1)
+            {// caso a lista seja par e seja o ultimo item      j = 0;  
+                j = 0;
+            }
+
+            if (listaIndividuos[i].Escolha() == "trapacear" && listaIndividuos[j].Escolha() == "trapacear")
+            {
+                listaIndividuos[i].moeda -= 1;
+                listaIndividuos[j].moeda -= 1;
+            }
+
+            else if (listaIndividuos[i].Escolha() == "cooperar" && listaIndividuos[j].Escolha() == "cooperar")
+            {
+                listaIndividuos[i].moeda += 1;
+                listaIndividuos[j].moeda += 1;
+            }
+
+            else if (listaIndividuos[i].Escolha() == "trapacear" && listaIndividuos[j].Escolha() == "cooperar")
+            {
+                listaIndividuos[i].moeda += 3;
+                listaIndividuos[j].moeda -= 1;
+            }
+
+            else if (listaIndividuos[i].Escolha() == "cooperar" && listaIndividuos[j].Escolha() == "trapacear")
+            {
+                listaIndividuos[i].moeda -= 1;
+                listaIndividuos[j].moeda += 3;
+            }
+
+            listaIndividuos[i].decisaoAnterior = listaIndividuos[j].Escolha();
+            listaIndividuos[j].decisaoAnterior = listaIndividuos[i].Escolha();
+
+            if (listaIndividuos[i].moeda < 1)
+            {
+                removedI = true;
+            }
+
+            if (listaIndividuos[j].moeda < 1)
+            {
+                removedJ = true;
+            }
+
+
+            if (removedI == true && removedJ == true)
+            {
+                if (i > j)
+                {
+                    listaIndividuos.RemoveAt(i);
+                    listaIndividuos.RemoveAt(j);
+                }
+                else
+                {
+                    listaIndividuos.RemoveAt(j);
+                    listaIndividuos.RemoveAt(i);
+                }
+            }
+
+            else if (removedI == true)
+            {
+                listaIndividuos.RemoveAt(i);
+            }
+
+            else if (removedJ == true)
+            {
+                listaIndividuos.RemoveAt(j);
+            }
+
+            if (listaIndividuos[i].moeda > 19)
+            {
+                listaIndividuos[i].moeda = listaIndividuos[i].moeda / 2;
+            }
+
         }
-
-        else if (listaIndividuos[i].Escolha() == "cooperar" && listaIndividuos[i + 1].Escolha() == "cooperar")
-        {
-            listaIndividuos[i].moeda += 1;
-            listaIndividuos[i + 1].moeda += 1;
-        }
-
-        else if (listaIndividuos[i].Escolha() == "trapacear" && listaIndividuos[i + 1].Escolha() == "cooperar")
-        {
-            listaIndividuos[i].moeda += 3;
-            listaIndividuos[i + 1].moeda -= 1;
-        }
-
-        else if (listaIndividuos[i].Escolha() == "cooperar" && listaIndividuos[i + 1].Escolha() == "trapacear")
-        {
-            listaIndividuos[i].moeda -= 1;
-            listaIndividuos[i + 1].moeda += 3;
-        }
-
-        listaIndividuos[i].decisaoAnterior = listaIndividuos[i + 1].Escolha();
-        listaIndividuos[i + 1].decisaoAnterior = listaIndividuos[i].Escolha();
-
     }
 
-
-    foreach (Individuo item in listaIndividuos)
+    for (int k = 0; k < listaIndividuos.Count; k++)
     {
-        System.Console.WriteLine($"{item}: {item.moeda}");
+        System.Console.WriteLine($"{listaIndividuos[k]}: {listaIndividuos[k].moeda} index[{k}]");
     }
 
     System.Console.WriteLine();
 
 }
 
+bool game = true;
 List<Individuo> listaIndividuos = StartSimulation();
-Misturar(ref listaIndividuos);
-play(ref listaIndividuos);
-Misturar(ref listaIndividuos);
-play(ref listaIndividuos);
+
+
+while (game)
+{
+
+    for (int i = 0; i < listaIndividuos.Count; i++)
+    {
+        if (listaIndividuos.Count < 2)
+            game = false;
+    }
+
+    Misturar(ref listaIndividuos);
+    play(ref listaIndividuos);
+}
 
