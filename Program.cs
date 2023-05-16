@@ -75,12 +75,14 @@ void play(ref List<Individuo> listaIndividuos)
             {
                 listaIndividuos[i].moeda += 3;
                 listaIndividuos[j].moeda -= 1;
+                listaIndividuos[j].trapaceado += 1;
             }
 
             else if (listaIndividuos[i].Escolha() == "cooperar" && listaIndividuos[j].Escolha() == "trapacear")
             {
                 listaIndividuos[i].moeda -= 1;
                 listaIndividuos[j].moeda += 3;
+                listaIndividuos[j].trapaceado += 1;
             }
 
             listaIndividuos[i].decisaoAnterior = listaIndividuos[j].Escolha();
@@ -94,6 +96,19 @@ void play(ref List<Individuo> listaIndividuos)
             if (listaIndividuos[j].moeda < 1)
             {
                 removedJ = true;
+            }
+
+
+
+
+            if (listaIndividuos[i].moeda > 19)
+            {
+                listaIndividuos[i].moeda = listaIndividuos[i].moeda / 2;
+            }
+
+            if (listaIndividuos[j].moeda > 19)
+            {
+                listaIndividuos[j].moeda = listaIndividuos[j].moeda / 2;
             }
 
 
@@ -111,30 +126,36 @@ void play(ref List<Individuo> listaIndividuos)
                 }
             }
 
-            else if (removedI == true)
+            else if (removedI == true && removedJ == false)
             {
                 listaIndividuos.RemoveAt(i);
             }
 
-            else if (removedJ == true)
+            else if (removedJ == true && removedI == false)
             {
                 listaIndividuos.RemoveAt(j);
             }
 
-            if (listaIndividuos[i].moeda > 19)
-            {
-                listaIndividuos[i].moeda = listaIndividuos[i].moeda / 2;
-            }
+
 
         }
+        if (listaIndividuos != null)
+        {
+            for (int k = 0; k < listaIndividuos.Count; k++)
+            {
+                System.Console.WriteLine($"{listaIndividuos[k]}: {listaIndividuos[k].moeda} index[{k}]");
+            }
+        }
+
+        else
+        {
+            System.Console.WriteLine("todos morreram");
+        }
+
+        System.Console.WriteLine();
     }
 
-    for (int k = 0; k < listaIndividuos.Count; k++)
-    {
-        System.Console.WriteLine($"{listaIndividuos[k]}: {listaIndividuos[k].moeda} index[{k}]");
-    }
 
-    System.Console.WriteLine();
 
 }
 
